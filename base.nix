@@ -101,7 +101,6 @@
     intel-gpu-tools
     git
     rustdesk
-    inputs.gabin.packages."${pkgs.system}".gabin
     (unstable.wrapOBS {
       plugins = with unstable.obs-studio-plugins; [
         obs-move-transition
