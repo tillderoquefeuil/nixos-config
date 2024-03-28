@@ -29,13 +29,13 @@
     in {
       ### Device configs :
       nixosConfigurations = {
-        nuc = nixpkgs.lib.nixosSystem {
+        test = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = { inherit inputs; };
           modules = [
             ({ config, pkgs, ... }: { nixpkgs.overlays = [ overlay-unstable ]; })
             ./base.nix
-            ./hosts/nuc/default.nix
+            ./hosts/test/default.nix
           ];
         };
       };

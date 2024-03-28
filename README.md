@@ -4,40 +4,56 @@ Temporary password for `oneclickstudio` user is `micode`.
 
 ### Setup a new machine
 
-- install NixOS with official ISO
-- clone shared config :
 ```bash
-cd ~
-git clone https://USERNAME:TOKEN@github.com/oneclickstudio/nixos-config.git
-cd nixos-config
-mkdir hosts/my-machine-name
-sudo cp /etc/nixos/hardware-configuration.nix ./hosts/my-machine-name
-sudo rm /etc/nixos/*
+$ cd ~
+
+$ git clone https://github.com/tillderoquefeuil/nixos-config.git
+$ cd nixos-config
+
+$ sudo cp /etc/nixos/hardware-configuration.nix ./hosts/test
+$ sudo rm /etc/nixos/*
+
+# copy the lv2 plugin
+$ mkdir -p ~/.lv2
+$ cp -R ./AutoMixer.lv2 ~/.lv2/
+
+$ sudo nixos-rebuild switch --flake .#test
+$ systemctl --user restart wireplumber && systemctl --user restart pipewire
 ```
-- then take inspiration from `msi-laptop` default nix config to create `./hosts/my-machine-name/default.nix`
-- add an entry to flake.nix's `nixosConfigurations`
-- see the **FYI section** at the end of this file
 
-
-### Run VSCode
-
-`nix run .#vscode .`
-
-### Build OS and switch to new version
-
-`sudo nixos-rebuild switch --flake .#msi-laptop`
-
-### Update flake.lock
-
-`nix flake update`
-
-### Performance monitoring
+in an other terminal, run ```journalctl --user -u wireplumber -f``` to see debug
 
 ```bash
-intel_gpu_top #intel iGPU monitoring
-zenith # CPU / Nvidia GPU
+# list current inputs/outputs
+$ pw-link -io
+> my-source:capture_MONO
+> my-source:input_MONO
+> my-sink:monitor_MONO
+> my-sink:playback_MONO
+> Firefox:output_FL
+> Firefox:output_FR
+
+# useful tips :
+# - I/O structure is : <node.name>:<portType>_<audio.position>
+# - outputs portType are 'monitor', 'capture' or 'output'
+# - inputs portType are 'playback' or 'input'
+# - Audio position : FL/FR (front left/right), MONO, etc.
+
+# link an input and an output
+$ pw-link <output> <input>
 ```
+
+linking default input with gate node (should work) :
+```bash
+pw-link alsa_input.pci-0000_03_00.6.analog-stereo:capture_FL input_gate_test:playback_MONO
+```
+
+linking default input with automixer node :
+```bash
+pw-link alsa_input.pci-0000_03_00.6.analog-stereo:capture_FL input_automixer_test:playback_1
+```
+
+
 
 ### FYI
-
 - nix files must be added to git tree in order to be considered by NixOS (or you'll get a _file not found_)

@@ -1,8 +1,5 @@
 { config, pkgs, ... }:
-
-let
-  json = pkgs.formats.json { };
-in {
+{
   # Enable sound with pipewire.
   sound.enable = true;
   hardware.pulseaudio.enable = false;
@@ -17,4 +14,11 @@ in {
     # Use wireplumber as the session manager
     wireplumber.enable = true;
   };
+
+  environment.etc = {
+    "pipewire/pipewire.conf".source = ./pipewire/pipewire.conf;
+    "wireplumber/wireplumber.conf".source = ./wireplumber/wireplumber.conf;
+    "wireplumber/wireplumber.conf.d/test.conf".source = ./wireplumber/wireplumber.conf.d/test.conf;
+  };
+
 }

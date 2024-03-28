@@ -77,7 +77,6 @@
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
       firefox
-    #  thunderbird
     ];
   };
 
@@ -100,25 +99,15 @@
     zenith-nvidia
     intel-gpu-tools
     git
-    rustdesk
-    (unstable.wrapOBS {
-      plugins = with unstable.obs-studio-plugins; [
-        obs-move-transition
-        obs-pipewire-audio-capture
-        obs-mute-filter
-        obs-source-clone
-        obs-source-record
-      ];
-    })
+    gh
+
     carla
     lsp-plugins
     freetype
-    gh
   ];
 
   environment.variables = {
     LV2_PATH = "$HOME/.lv2:$HOME/.nix-profile/lib/lv2:/run/current-system/sw/lib/lv2";
-    LD_LIBRARY_PATH = pkgs.lib.mkForce "$HOME/.nix-profile/lib:/run/current-system/sw/lib";
   };
 
   # Some programs need SUID wrappers, can be configured further or are
